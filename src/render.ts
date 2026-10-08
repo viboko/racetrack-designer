@@ -1,12 +1,12 @@
 import { closedSplineBeziers, type Point } from './geometry';
 import { KERB_RED, KERB_WHITE, toHex } from './palette';
-import { STAGE_HEIGHT, STAGE_WIDTH, hasTrack, type TrackState } from './state';
+import { CANVAS_HEIGHT, CANVAS_WIDTH, hasTrack, type TrackState } from './state';
 import { TEXTURE_TILE, generateTexture, type TextureKind } from './textures';
 import { outerWidth, startLine, stripeLength } from './track';
 
 const tileCache = new Map<string, HTMLCanvasElement>();
 
-/** A canvas holding one texture tile at `scale` pixels per stage unit (cached). */
+/** A canvas holding one texture tile at `scale` pixels per canvas unit (cached). */
 export function textureTile(kind: TextureKind, scale: number): HTMLCanvasElement {
   const key = `${kind}@${scale}`;
   let tile = tileCache.get(key);
@@ -28,7 +28,7 @@ function texturePattern(
   scale: number,
 ): CanvasPattern {
   const pattern = ctx.createPattern(textureTile(kind, scale), 'repeat')!;
-  // The context is scaled to stage units; undo that so tile pixels map 1:1 to canvas pixels.
+  // The context is scaled to canvas units; undo that so tile pixels map 1:1 to canvas pixels.
   pattern.setTransform(new DOMMatrix().scale(1 / scale));
   return pattern;
 }
@@ -42,14 +42,14 @@ export function traceSpline(ctx: CanvasRenderingContext2D, points: readonly Poin
 }
 
 /**
- * Draw the finished track (no editing handles) onto a canvas that is `scale` pixels per stage
+ * Draw the finished track (no editing handles) onto a canvas that is `scale` pixels per canvas
  * unit. Layer order matters: kerbs first, road on top, so crossings become clean junctions.
  */
 export function drawTrack(ctx: CanvasRenderingContext2D, state: TrackState, scale: number): void {
   ctx.save();
   ctx.setTransform(scale, 0, 0, scale, 0, 0);
   ctx.fillStyle = texturePattern(ctx, 'grass', scale);
-  ctx.fillRect(0, 0, STAGE_WIDTH, STAGE_HEIGHT);
+  ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
   if (hasTrack(state)) {
     const outer = outerWidth(state.roadWidth);

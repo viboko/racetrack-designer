@@ -7,21 +7,23 @@ import { sketchToControlPoints } from './sketch';
 import {
   MAX_ROAD_WIDTH,
   MIN_ROAD_WIDTH,
-  STAGE_HEIGHT,
-  STAGE_WIDTH,
-  clampToStage,
+  CANVAS_HEIGHT,
+  CANVAS_WIDTH,
+  clampToCanvas,
   hasTrack,
   initialState,
   type TrackState,
 } from './state';
 import { outerWidth } from './track';
 
-/** On-screen canvas resolution, in pixels per stage unit. */
+/** On-screen canvas resolution, in pixels per canvas unit. */
 const DISPLAY_SCALE = 2;
 const MIN_POINTS_AFTER_DELETE = 4;
+/** Downloaded PNG resolution, in pixels per canvas unit. */
+const PNG_SCALE = 2;
 
 const $ = <T extends HTMLElement>(id: string): T => document.getElementById(id) as T;
-const canvas = $<HTMLCanvasElement>('stage');
+const canvas = $<HTMLCanvasElement>('track-canvas');
 const ctx = canvas.getContext('2d')!;
 const hint = $('hint');
 const widthInput = $<HTMLInputElement>('width');
@@ -31,8 +33,8 @@ const undoButton = $<HTMLButtonElement>('undo');
 const clearButton = $<HTMLButtonElement>('clear');
 const downloadButtons = document.querySelectorAll<HTMLButtonElement>('[data-download]');
 
-canvas.width = STAGE_WIDTH * DISPLAY_SCALE;
-canvas.height = STAGE_HEIGHT * DISPLAY_SCALE;
+canvas.width = CANVAS_WIDTH * DISPLAY_SCALE;
+canvas.height = CANVAS_HEIGHT * DISPLAY_SCALE;
 widthInput.min = String(MIN_ROAD_WIDTH);
 widthInput.max = String(MAX_ROAD_WIDTH);
 
@@ -90,11 +92,11 @@ function render(): void {
   ctx.restore();
 }
 
-function toStage(e: MouseEvent): Point {
+function toCanvas(e: MouseEvent): Point {
   const rect = canvas.getBoundingClientRect();
-  return clampToStage({
-    x: ((e.clientX - rect.left) / rect.width) * STAGE_WIDTH,
-    y: ((e.clientY - rect.top) / rect.height) * STAGE_HEIGHT,
+  return clampToCanvas({
+    x: ((e.clientX - rect.left) / rect.width) * CANVAS_WIDTH,
+    y: ((e.clientY - rect.top) / rect.height) * CANVAS_HEIGHT,
   });
 }
 
@@ -104,7 +106,7 @@ function hitRadius(e: PointerEvent | MouseEvent): number {
 
 canvas.addEventListener('pointerdown', (e) => {
   if (e.button !== 0) return;
-  const p = toStage(e);
+  const p = toCanvas(e);
   if (!hasTrack(draft)) {
     gesture = { kind: 'sketch', points: [p] };
   } else {
@@ -118,7 +120,7 @@ canvas.addEventListener('pointerdown', (e) => {
 });
 
 canvas.addEventListener('pointermove', (e) => {
-  const p = toStage(e);
+  const p = toCanvas(e);
   if (gesture?.kind === 'sketch') {
     gesture.points.push(p);
   } else if (gesture?.kind === 'drag') {
@@ -162,19 +164,23 @@ canvas.addEventListener('pointercancel', () => {
 
 canvas.addEventListener('dblclick', (e) => {
   if (!hasTrack(draft)) return;
-  const p = toStage(e);
+  const p = toCanvas(e);
   const points = [...draft.controlPoints];
   const index = nearestPointIndex(points, p, hitRadius(e));
+  let showStartLine = draft.showStartLine;
   if (index >= 0) {
     if (points.length <= MIN_POINTS_AFTER_DELETE) return;
     points.splice(index, 1);
     hoverIndex = -1;
+    // The start line sits on the first point; removing that point removes the start line too,
+    // rather than letting it jump to the next point.
+    if (index === 0) showStartLine = false;
   } else {
     const seg = nearestSegment(points, p);
     if (!seg || seg.distance > outerWidth(draft.roadWidth) / 2 + 6) return;
     points.splice(seg.index + 1, 0, p);
   }
-  commit({ ...draft, controlPoints: points });
+  commit({ ...draft, controlPoints: points, showStartLine });
 });
 
 widthInput.addEventListener('input', () => {
@@ -214,8 +220,7 @@ downloadButtons.forEach((button) =>
     if (kind === 'svg') {
       downloadBlob(renderSvg(state), 'track.svg');
     } else {
-      const scale = kind === 'png2x' ? 2 : 1;
-      downloadBlob(await renderPng(state, scale), scale === 2 ? 'track@2x.png' : 'track.png');
+      downloadBlob(await renderPng(state, PNG_SCALE), 'track.png');
     }
   }),
 );

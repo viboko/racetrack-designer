@@ -24,7 +24,7 @@ export function stripeLength(state: TrackState): number {
 }
 
 export interface StartLine {
-  /** Centre of the line, in stage units. */
+  /** Centre of the line, in canvas units. */
   readonly x: number;
   readonly y: number;
   /** Direction of travel, in radians. */

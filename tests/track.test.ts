@@ -45,7 +45,7 @@ describe('track layout', () => {
 });
 
 describe('buildSvg', () => {
-  it('produces a valid 480x360 SVG with red and white kerbs and a textured road', () => {
+  it('produces a valid SVG with red and white kerbs and a textured road', () => {
     const doc = parse(buildSvg(track, tiles));
     const svg = doc.documentElement;
     expect(svg.getAttribute('viewBox')).toBe('0 0 480 360');

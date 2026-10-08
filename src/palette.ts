@@ -1,6 +1,6 @@
 export type RGB = readonly [number, number, number];
 
-/** The only colours the Scratch game should treat as "edge of track". */
+/** The only colours a game should treat as "edge of track". */
 export const KERB_RED: RGB = [255, 0, 0];
 export const KERB_WHITE: RGB = [255, 255, 255];
 

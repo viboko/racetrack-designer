@@ -1,6 +1,6 @@
 import { splinePathData } from './geometry';
 import { KERB_RED, KERB_WHITE, toHex } from './palette';
-import { STAGE_HEIGHT, STAGE_WIDTH, hasTrack, type TrackState } from './state';
+import { CANVAS_HEIGHT, CANVAS_WIDTH, hasTrack, type TrackState } from './state';
 import { TEXTURE_TILE, type TextureKind } from './textures';
 import { outerWidth, startLine, stripeLength } from './track';
 
@@ -21,7 +21,7 @@ function patternDef(id: TextureKind, href: string): string {
  */
 export function buildSvg(state: TrackState, tiles: Record<TextureKind, string>): string {
   const body: string[] = [
-    `<rect width="${STAGE_WIDTH}" height="${STAGE_HEIGHT}" fill="url(#grass)"/>`,
+    `<rect width="${CANVAS_WIDTH}" height="${CANVAS_HEIGHT}" fill="url(#grass)"/>`,
   ];
 
   if (hasTrack(state)) {
@@ -53,7 +53,7 @@ export function buildSvg(state: TrackState, tiles: Record<TextureKind, string>):
 
   return (
     `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" ` +
-    `width="${STAGE_WIDTH}" height="${STAGE_HEIGHT}" viewBox="0 0 ${STAGE_WIDTH} ${STAGE_HEIGHT}">` +
+    `width="${CANVAS_WIDTH}" height="${CANVAS_HEIGHT}" viewBox="0 0 ${CANVAS_WIDTH} ${CANVAS_HEIGHT}">` +
     `<defs>${patternDef('grass', tiles.grass)}${patternDef('asphalt', tiles.asphalt)}</defs>` +
     body.join('') +
     `</svg>`

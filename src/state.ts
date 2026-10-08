@@ -1,8 +1,8 @@
 import type { Point } from './geometry';
 
-/** Scratch stage size; all track geometry is in these units. */
-export const STAGE_WIDTH = 480;
-export const STAGE_HEIGHT = 360;
+/** Image size; all track geometry is in these units. */
+export const CANVAS_WIDTH = 480;
+export const CANVAS_HEIGHT = 360;
 
 export const MIN_ROAD_WIDTH = 24;
 export const MAX_ROAD_WIDTH = 70;
@@ -24,9 +24,9 @@ export function hasTrack(state: TrackState): boolean {
   return state.controlPoints.length >= 3;
 }
 
-export function clampToStage(p: Point): Point {
+export function clampToCanvas(p: Point): Point {
   return {
-    x: Math.min(STAGE_WIDTH, Math.max(0, p.x)),
-    y: Math.min(STAGE_HEIGHT, Math.max(0, p.y)),
+    x: Math.min(CANVAS_WIDTH, Math.max(0, p.x)),
+    y: Math.min(CANVAS_HEIGHT, Math.max(0, p.y)),
   };
 }

@@ -1,70 +1,79 @@
-# Track Designer
+# RaceTrack Designer
 
-A single-page web app for quickly making a background for a simple top-down racing game in
-[Scratch](https://scratch.mit.edu). Sketch a loop and it becomes a track: textured grey road,
-red-and-white kerbs and textured grass, at Scratch's 480×360 stage size.
+A single-page web app for making the background of a simple top-down racing
+game. Sketch a loop and it becomes a track - textured road, red-and-white
+kerbs and grass - ready to download as a PNG or SVG. Built with
+[Vite](https://vite.dev) and TypeScript.
 
-## Using it
+Live at <https://racetrack.viboko.dev>.
 
-1. Drag on the canvas to sketch a loop. When you let go, the end joins back to the start and the
-   sketch is smoothed into a track.
-2. Reshape the track:
-   - **Drag** a point to move it.
-   - **Double-click the track** to add a point there.
-   - **Double-click a point** to remove it.
-   - The blue point marks where the start/finish line goes.
-3. Adjust the **road width**, toggle the **start line**, and use **Undo** (Ctrl/Cmd+Z) or
-   **Clear** as needed. Untick **Show points** to preview the result without handles.
-4. Download:
-   - **PNG 480×360**: exact stage size.
-   - **PNG 960×720**: double resolution. Scratch 3 stores bitmap backdrops at 2×, so this one
-     looks sharper on stage. Import it and it fills the stage.
-   - **SVG**: kerbs and road are vector paths. The grass and asphalt textures are embedded as
-     tiling PNG patterns.
+The kerbs are the only pure red (`#FF0000`) and pure white (`#FFFFFF`) things
+in the image, so a game can detect the edge of the track by colour.
 
-If the loop crosses itself, the crossing becomes a junction: the road is drawn over the kerbs.
+## Running locally
 
-## Colour rules for the Scratch game
+Install dependencies:
 
-The game detects the edge of the track with `touching color`, so:
+```bash
+just install
+```
 
-- **Kerbs are the only red or white things in the image.** They use pure red `#FF0000` and pure
-  white `#FFFFFF`. Use those exact colours in your `touching color` blocks.
-- Grass and asphalt textures stay well away from red and white. A unit test checks every texture
-  pixel against both colours, so changing the textures can't quietly break detection.
-- The start/finish line is black and yellow, so it never counts as an edge.
-- Edges are antialiased, so a 1–2 px blend appears where the kerb meets road or grass. Detection
-  still works because the kerb itself is solid.
+Then start the dev server:
 
-## Development
+```bash
+just dev
+```
 
-Requires Node 24+ and [just](https://github.com/casey/just).
+The site will be available at <http://localhost:5173>.
 
-| Recipe           | What it does                                              |
-| ---------------- | --------------------------------------------------------- |
-| `just install`   | Install dependencies (`npm ci`)                           |
-| `just dev`       | Run the Vite dev server (also on your LAN, for phones)    |
-| `just build`     | Build the static site into `dist/`                        |
-| `just preview`   | Build and serve the production bundle                     |
-| `just test`      | Run unit tests (Vitest)                                   |
-| `just lint`      | ESLint + Prettier check                                   |
-| `just typecheck` | TypeScript type check                                     |
-| `just fmt`       | Auto-format and auto-fix lint issues                      |
-| `just ci`        | Everything CI runs: install, lint, typecheck, test, build |
+## Checks
 
-### Layout
+The `ci` GitHub Actions workflow runs four independent checks on every push
+and pull request: `just lint`, `just typecheck test build`,
+`just check-accessibility`, and `just check-security`. Pushes to `main` that
+pass are deployed to GitHub Pages by the `deploy` workflow.
 
-- `src/geometry.ts`: resampling, simplification, closed Catmull-Rom → Bézier spline, hit testing
-- `src/sketch.ts`: freehand sketch → control points
-- `src/textures.ts`: seeded, seamlessly tiling grass/asphalt textures (pure pixel buffers)
-- `src/palette.ts`: kerb colours and the "too close to kerb" check
-- `src/track.ts`: kerb width, stripe length, start-line layout (shared by PNG and SVG)
-- `src/render.ts`: canvas renderer (on-screen and PNG export)
-- `src/svg.ts`: SVG export
-- `src/main.ts`: UI wiring, editing and undo history
+### Linting
 
-## CI and deployment
+```bash
+just lint
+```
 
-- `.github/workflows/ci.yml` runs `just ci` on every pull request and on pushes to `main`.
-- `.github/workflows/pages.yml` builds and deploys `main` to GitHub Pages. One-time setup: in the
-  repo's **Settings → Pages**, set **Source** to **GitHub Actions**.
+Lints TypeScript and YAML (`eslint`), formatting (`prettier`), Markdown
+(`markdownlint`), CSS (`stylelint`), the built HTML (`html-validate`), and SEO
+basics (`robots.txt`, `sitemap.xml`, absolute OG/canonical URLs).
+
+### Tests
+
+```bash
+just test
+```
+
+Runs the unit tests with Vitest. `just typecheck` type-checks with `tsc`.
+
+### Accessibility
+
+```bash
+just check-accessibility
+```
+
+Checks accessibility with `pa11y-ci` (WCAG2AA) and Lighthouse. Both build the
+site and serve it locally to run against.
+
+### Security
+
+```bash
+just check-security
+```
+
+Checks npm dependencies for known vulnerabilities with
+[`osv-scanner`](https://google.github.io/osv-scanner/) against the
+[OSV database](https://osv.dev). `osv-scanner` isn't managed by
+`just install` - install it separately, e.g. `brew install osv-scanner`.
+
+Vulnerabilities that don't apply (e.g. dev-only tooling with no fix
+available) are suppressed with a reason in [`osv-scanner.toml`](osv-scanner.toml)
+rather than silently ignored.
+
+Separately, [Dependabot](.github/dependabot.yml) opens a PR weekly for any
+outdated npm package or GitHub Action.

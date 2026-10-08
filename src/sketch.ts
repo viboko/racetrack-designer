@@ -1,5 +1,5 @@
 import { distance, polylineLength, resample, simplifyClosed, type Point } from './geometry';
-import { clampToStage } from './state';
+import { clampToCanvas } from './state';
 
 export const MIN_CONTROL_POINTS = 6;
 export const MAX_CONTROL_POINTS = 24;
@@ -11,7 +11,7 @@ const MIN_SKETCH_SPAN = 30;
  * its end back to its start. Returns null when the sketch is too small to make a track from.
  */
 export function sketchToControlPoints(raw: readonly Point[]): Point[] | null {
-  const points = raw.map(clampToStage);
+  const points = raw.map(clampToCanvas);
   if (points.length < 3 || polylineLength(points) < MIN_SKETCH_LENGTH) return null;
 
   const xs = points.map((p) => p.x);
