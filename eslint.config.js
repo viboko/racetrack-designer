@@ -1,14 +1,24 @@
 import js from '@eslint/js';
 import globals from 'globals';
+import yml from 'eslint-plugin-yml';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
-  { ignores: ['dist', 'node_modules', 'coverage'] },
-  js.configs.recommended,
-  ...tseslint.configs.recommended,
+  { ignores: ['dist', 'node_modules', 'coverage', '.lighthouseci'] },
   {
+    files: ['**/*.{js,ts}'],
+    extends: [js.configs.recommended, ...tseslint.configs.recommended],
     languageOptions: {
       globals: { ...globals.browser, ...globals.node },
+    },
+  },
+  ...yml.configs['flat/standard'],
+  {
+    // A bare `pull_request:` (no value) is the standard GitHub Actions
+    // syntax for "default event types", not a mistake.
+    files: ['.github/workflows/**/*.{yml,yaml}'],
+    rules: {
+      'yml/no-empty-mapping-value': 'off',
     },
   },
 );

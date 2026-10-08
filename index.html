@@ -3,21 +3,37 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Track Designer</title>
-    <link
-      rel="icon"
-      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%2348873a'/%3E%3Ccircle cx='8' cy='8' r='5' fill='none' stroke='%23ff0000' stroke-width='3' stroke-dasharray='2 2'/%3E%3C/svg%3E"
+    <title>RaceTrack Designer</title>
+    <meta
+      name="description"
+      content="Sketch a loop and turn it into a top-down racing track graphic, with kerbs, road and grass, ready to download as PNG or SVG."
     />
+    <link rel="canonical" href="https://racetrack.viboko.dev/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="RaceTrack Designer" />
+    <meta
+      property="og:description"
+      content="Sketch a loop and turn it into a top-down racing track graphic."
+    />
+    <meta property="og:url" content="https://racetrack.viboko.dev/" />
+    <meta name="theme-color" content="#141414" />
+    <meta name="apple-mobile-web-app-title" content="RaceTrack" />
+    <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
+    <link rel="icon" type="image/x-icon" href="/favicon/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+    <link rel="manifest" href="/favicon/site.webmanifest" />
   </head>
   <body>
     <header>
-      <h1>Track Designer</h1>
-      <p>Draw a loop to make a 480×360 racing-track backdrop for Scratch.</p>
+      <h1>RaceTrack Designer</h1>
+      <p>Draw a loop to make a top-down racing track.</p>
     </header>
 
     <main>
-      <div class="stage-wrap">
-        <canvas id="stage" aria-label="Track drawing area"></canvas>
+      <div class="canvas-wrap">
+        <canvas id="track-canvas" role="img" aria-label="Track drawing area"></canvas>
         <div id="hint" class="hint">Draw a loop</div>
       </div>
 
@@ -35,9 +51,8 @@
 
       <div class="toolbar">
         <span class="label">Download</span>
-        <button type="button" data-download="png1x" class="primary">PNG 480×360</button>
-        <button type="button" data-download="png2x" class="primary">PNG 960×720</button>
-        <button type="button" data-download="svg">SVG</button>
+        <button type="button" data-download="png" class="primary">PNG</button>
+        <button type="button" data-download="svg" class="primary">SVG</button>
       </div>
 
       <p class="help">

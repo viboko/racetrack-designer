@@ -1,14 +1,14 @@
 import { drawTrack, textureTile } from './render';
-import { STAGE_HEIGHT, STAGE_WIDTH, type TrackState } from './state';
+import { CANVAS_HEIGHT, CANVAS_WIDTH, type TrackState } from './state';
 import { buildSvg } from './svg';
 
-/** Texture tiles in the SVG are embedded at 2×, matching Scratch's bitmap resolution. */
+/** Texture tiles in the SVG are embedded at 2×, matching the PNG download. */
 const SVG_TEXTURE_SCALE = 2;
 
 export function renderPng(state: TrackState, scale: number): Promise<Blob> {
   const canvas = document.createElement('canvas');
-  canvas.width = STAGE_WIDTH * scale;
-  canvas.height = STAGE_HEIGHT * scale;
+  canvas.width = CANVAS_WIDTH * scale;
+  canvas.height = CANVAS_HEIGHT * scale;
   drawTrack(canvas.getContext('2d')!, state, scale);
   return new Promise((resolve, reject) =>
     canvas.toBlob(

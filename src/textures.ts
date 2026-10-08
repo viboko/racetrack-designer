@@ -2,7 +2,7 @@ import { mulberry32 } from './prng';
 
 export type TextureKind = 'grass' | 'asphalt';
 
-/** Size of one texture tile in stage units. Textures tile seamlessly at this period. */
+/** Size of one texture tile in canvas units. Textures tile seamlessly at this period. */
 export const TEXTURE_TILE = 120;
 
 export const TEXTURE_SEEDS: Record<TextureKind, number> = { grass: 1337, asphalt: 4242 };

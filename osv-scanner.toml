@@ -1,0 +1,41 @@
+# Vulnerabilities below are all in transitive, dev-only dependencies: the
+# headless-Chrome tooling behind the accessibility checks (@lhci/cli and
+# pa11y-ci, via Lighthouse/Puppeteer) and stylelint's file globbing. None of
+# it is shipped in the built site, and no fix is available without a
+# breaking downgrade. Revisit before the dates below and drop any entries
+# that have since been fixed upstream.
+
+[[IgnoredVulns]]
+id = "GHSA-vfj7-8cjw-p6xm" # braces, via stylelint -> micromatch
+ignoreUntil = 2027-01-08
+reason = "Dev-only transitive dependency of stylelint, only run against our own CSS; no fix available"
+
+[[IgnoredVulns]]
+id = "GHSA-jmr9-qjv8-65gv" # extract-zip, via @lhci/cli / pa11y-ci -> puppeteer
+ignoreUntil = 2027-01-08
+reason = "Dev-only transitive dependency of the accessibility checks; no fix available"
+
+[[IgnoredVulns]]
+id = "GHSA-7pqw-9j4j-h8q3" # extract-zip, via @lhci/cli / pa11y-ci -> puppeteer
+ignoreUntil = 2027-01-08
+reason = "Dev-only transitive dependency of the accessibility checks; no fix available"
+
+[[IgnoredVulns]]
+id = "GHSA-hp3w-g68c-fv3c" # sprintf-js, via @lhci/cli -> js-yaml 3 -> argparse
+ignoreUntil = 2027-01-08
+reason = "Dev-only transitive dependency of @lhci/cli; no fix available"
+
+[[IgnoredVulns]]
+id = "GHSA-52f5-9888-hmc6" # tmp, via @lhci/cli
+ignoreUntil = 2027-01-08
+reason = "Dev-only transitive dependency of @lhci/cli; no fix available without a breaking downgrade"
+
+[[IgnoredVulns]]
+id = "GHSA-ph9p-34f9-6g65" # tmp, via @lhci/cli
+ignoreUntil = 2027-01-08
+reason = "Dev-only transitive dependency of @lhci/cli; no fix available without a breaking downgrade"
+
+[[IgnoredVulns]]
+id = "GHSA-w5hq-g745-h8pq" # uuid, via @lhci/cli
+ignoreUntil = 2027-01-08
+reason = "Dev-only transitive dependency of @lhci/cli; no fix available without a breaking downgrade"

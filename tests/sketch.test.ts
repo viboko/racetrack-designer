@@ -33,7 +33,7 @@ describe('sketchToControlPoints', () => {
     expect(distance(out[0]!, out[out.length - 1]!)).toBeGreaterThan(1);
   });
 
-  it('clamps points to the stage', () => {
+  it('clamps points to the canvas', () => {
     const out = sketchToControlPoints(circle(240, 180, 400, 400))!;
     for (const p of out) {
       expect(p.x).toBeGreaterThanOrEqual(0);

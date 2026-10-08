@@ -1,18 +1,69 @@
-name: CI
+name: ci
 
 on:
-  pull_request:
   push:
     branches: [main]
+  pull_request:
 
 jobs:
-  ci:
+  lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: npm
-      - uses: extractions/setup-just@v3
-      - run: just ci
+
+      - uses: extractions/setup-just@v4
+
+      - run: npm ci
+
+      - run: just lint
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      - uses: extractions/setup-just@v4
+
+      - run: npm ci
+
+      - run: just typecheck test build
+
+  check-accessibility:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      - uses: extractions/setup-just@v4
+
+      - run: npm ci
+
+      - run: just check-accessibility
+
+  check-security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: extractions/setup-just@v4
+
+      - name: Install osv-scanner
+        run: |
+          echo "/home/linuxbrew/.linuxbrew/bin" >> "$GITHUB_PATH"
+          /home/linuxbrew/.linuxbrew/bin/brew install osv-scanner
+
+      - run: just check-security
