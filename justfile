@@ -6,9 +6,9 @@ default:
 install:
     npm ci
 
-# Run the dev server
+# Run the dev server, reachable from other devices on the local network (e.g. a phone)
 dev:
-    npm run dev
+    npm run dev -- --host
 
 # Build the static site into dist/
 build:

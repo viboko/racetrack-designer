@@ -43,7 +43,7 @@ Requires Node 24+ and [just](https://github.com/casey/just).
 | Recipe           | What it does                                              |
 | ---------------- | --------------------------------------------------------- |
 | `just install`   | Install dependencies (`npm ci`)                           |
-| `just dev`       | Run the Vite dev server                                   |
+| `just dev`       | Run the Vite dev server (also on your LAN, for phones)    |
 | `just build`     | Build the static site into `dist/`                        |
 | `just preview`   | Build and serve the production bundle                     |
 | `just test`      | Run unit tests (Vitest)                                   |
