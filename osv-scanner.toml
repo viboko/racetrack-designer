@@ -39,3 +39,13 @@ reason = "Dev-only transitive dependency of @lhci/cli; no fix available without 
 id = "GHSA-w5hq-g745-h8pq" # uuid, via @lhci/cli
 ignoreUntil = 2027-01-08
 reason = "Dev-only transitive dependency of @lhci/cli; no fix available without a breaking downgrade"
+
+[[IgnoredVulns]]
+id = "GHSA-mrhx-c7xc-m3w5" # zod 3, via @lhci/cli / pa11y-ci -> puppeteer -> chromium-bidi
+ignoreUntil = 2027-01-08
+reason = "Dev-only transitive dependency of the accessibility checks, only parsing messages from our own local browser; fix needs zod 4, which chromium-bidi 14 (pinned by lighthouse's puppeteer-core 24) does not support"
+
+[[IgnoredVulns]]
+id = "GHSA-g3hv-75wg-m249" # minimatch 3 and 10, via eslint, markdownlint-cli, typescript-eslint, pa11y-ci
+ignoreUntil = 2027-01-08
+reason = "Dev-only transitive dependency, only matching glob patterns from our own config; fix needs minimatch 11, outside the ranges its dependents accept"
